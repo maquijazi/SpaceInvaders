@@ -17,8 +17,19 @@ public class Marciano {
 
     public Image imagen1 = null;
     public Image imagen2 = null;
+    public int posX = 0;
+    public int posY = 0;
     private int anchoPantalla; //El marciano sabe cuanto mide la pantalla
     public int vida = 50;
+    
+    public void Mueve(boolean direccion){
+        if (direccion){
+            posX++;
+        }
+        else{
+            posX--;
+        }
+    }
 
     public Marciano(int _anchoPantalla) {
         anchoPantalla = _anchoPantalla;
