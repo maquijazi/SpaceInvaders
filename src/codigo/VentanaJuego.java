@@ -54,7 +54,7 @@ public class VentanaJuego extends javax.swing.JFrame {
     Disparo miDisparo = new Disparo();
 
     //Comienzo del array list
-    ArrayList<Disparo> listaDisparo = new ArrayList();//Encierra el tipo de dato concreto. Realizado para multidisparo
+    ArrayList<Disparo> listaDisparos = new ArrayList();//Encierra el tipo de dato concreto. Realizado para multidisparo
 
     Marciano[][] listaMarcianos = new Marciano[filasMarcianos][columnasMarcianos];//array de dos variables. Cajas sin marcianos aún.
     boolean direccionMarciano = true;
@@ -130,11 +130,11 @@ public class VentanaJuego extends javax.swing.JFrame {
 
     private void pintaDisparos(Graphics2D g2) {//Metodo que pinta todos los disparos
         Disparo disparoAux;
-        for (int i = 0; i < listaDisparo.size(); i++) {//listaDisparo.size() numero de elementos (disparos)
-            disparoAux = listaDisparo.get(i);
+        for (int i = 0; i < listaDisparos.size(); i++) {//listaDisparo.size() numero de elementos (disparos)
+            disparoAux = listaDisparos.get(i);
             disparoAux.mueve();
             if (disparoAux.posY < 0) {
-                listaDisparo.remove(i);//Elimino disparo que sale de la pantalla
+                listaDisparos.remove(i);//Elimino disparo que sale de la pantalla
             } else {
                 g2.drawImage(disparoAux.imagen, disparoAux.posX, disparoAux.posY, null);//Aunque borras disparo, para pintarlo no tiene problema
             }
@@ -151,7 +151,7 @@ public class VentanaJuego extends javax.swing.JFrame {
         g2.fillRect(0, 0, ANCHOPANTALLA, ALTOPANTALLA);
         contador++;
         pintaMarcianos(g2);
-        
+
         ////////////////////////////////////////////////////
         /**
          * if (contador < 50) { g2.drawImage(miMarciano.imagen1, 10, 10,
@@ -179,25 +179,22 @@ public class VentanaJuego extends javax.swing.JFrame {
         Rectangle2D.Double rectanguloMarciano = new Rectangle2D.Double();
         Rectangle2D.Double rectanguloDisparo = new Rectangle2D.Double();
 
-        //calculo el rectangulo que contiene al disparo
-        rectanguloDisparo.setFrame(miDisparo.posX,
-                miDisparo.posY,
-                miDisparo.imagen.getWidth(null),
-                miDisparo.imagen.getHeight(null));
+        for (int k = 0; k < listaDisparos.size(); k++) {
+            //calculo el rectangulo que contiene al disparo
+            rectanguloDisparo.setFrame(listaDisparos.get(k).posX, listaDisparos.get(k).posY, listaDisparos.get(k).imagen.getWidth(null), 
+                    listaDisparos.get(k).imagen.getHeight(null));
 
-        for (int i = 0; i < filasMarcianos; i++) {
-            for (int j = 0; j < columnasMarcianos; j++) {
-                //calculo el rectángulo corresponmdiente al marciano que estoy comprobando
-                rectanguloMarciano.setFrame(listaMarcianos[i][j].posX,
-                        listaMarcianos[i][j].posY,
-                        listaMarcianos[i][j].imagen1.getWidth(null),
-                        listaMarcianos[i][j].imagen1.getHeight(null)
-                );
+            for (int i = 0; i < filasMarcianos; i++) {
+                for (int j = 0; j < columnasMarcianos; j++) {
+                    //calculo el rectángulo corresponmdiente al marciano que estoy comprobando
+                    rectanguloMarciano.setFrame(listaMarcianos[i][j].posX, listaMarcianos[i][j].posY, listaMarcianos[i][j].imagen1.getWidth(null),
+                            listaMarcianos[i][j].imagen1.getHeight(null));
 
-                if (rectanguloDisparo.intersects(rectanguloMarciano)) {
-                    //Si entra aqui es porque han chocado un marciano y el disparo
-                    listaMarcianos[i][j].posY = 2000;
-                    miDisparo.posY = -2000;
+                    if (rectanguloDisparo.intersects(rectanguloMarciano)) {
+                        //Si entra aqui es porque han chocado un marciano y el disparo
+                        listaMarcianos[i][j].posY = 2000;
+                        listaDisparos.remove(k);
+                    }
                 }
             }
         }
@@ -297,7 +294,7 @@ public class VentanaJuego extends javax.swing.JFrame {
                 Disparo d = new Disparo();
                 d.posicionaDisparo(miNave);
                 //Agregamos disparo a listade disparos
-                listaDisparo.add(d);
+                listaDisparos.add(d);
                 break;
 
         }
