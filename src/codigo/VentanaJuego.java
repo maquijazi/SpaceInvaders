@@ -53,8 +53,9 @@ public class VentanaJuego extends javax.swing.JFrame {
     Nave miNave = new Nave();
     Disparo miDisparo = new Disparo();
 
-    //Comienzo del array list
+    //Comienzo de los array list
     ArrayList<Disparo> listaDisparos = new ArrayList();//Encierra el tipo de dato concreto. Realizado para multidisparo
+    ArrayList<Explosion> listaExplosiones = new ArrayList();//Arraylist de explosiones
 
     Marciano[][] listaMarcianos = new Marciano[filasMarcianos][columnasMarcianos];//array de dos variables. Cajas sin marcianos aún.
     boolean direccionMarciano = true;
@@ -79,6 +80,8 @@ public class VentanaJuego extends javax.swing.JFrame {
 
         imagenes[20] = plantilla.getSubimage(0, 320, 66, 32); //Cargo individualmente sprite nave
         imagenes[21] = plantilla.getSubimage(66, 320, 64, 32);
+        imagenes[22] = plantilla.getSubimage(130, 320, 64, 32);//Explosion parteB
+        imagenes[23] = plantilla.getSubimage(194, 320, 64, 32);//Explosion parteA
 
         setSize(ANCHOPANTALLA, ALTOPANTALLA);
 
@@ -163,7 +166,9 @@ public class VentanaJuego extends javax.swing.JFrame {
         g2.drawImage(miNave.imagen, miNave.posX, miNave.posY, null);
         //Dibujo imagen
         pintaDisparos(g2);//g2.drawImage(miDisparo.imagen, miDisparo.posX, miDisparo.posY, null);
+        pintaExplosiones(g2);
         chequeaColision();
+
         //////////////////////////////////////////////////////
         //dibujo de golpe todo el buffer sobre el jpanel1
         g2 = (Graphics2D) jPanel1.getGraphics();
@@ -181,7 +186,7 @@ public class VentanaJuego extends javax.swing.JFrame {
 
         for (int k = 0; k < listaDisparos.size(); k++) {
             //calculo el rectangulo que contiene al disparo
-            rectanguloDisparo.setFrame(listaDisparos.get(k).posX, listaDisparos.get(k).posY, listaDisparos.get(k).imagen.getWidth(null), 
+            rectanguloDisparo.setFrame(listaDisparos.get(k).posX, listaDisparos.get(k).posY, listaDisparos.get(k).imagen.getWidth(null),
                     listaDisparos.get(k).imagen.getHeight(null));
 
             for (int i = 0; i < filasMarcianos; i++) {
@@ -192,6 +197,14 @@ public class VentanaJuego extends javax.swing.JFrame {
 
                     if (rectanguloDisparo.intersects(rectanguloMarciano)) {
                         //Si entra aqui es porque han chocado un marciano y el disparo
+
+                        Explosion e = new Explosion();
+                        e.posX = listaMarcianos[i][j].posX;
+                        e.posY = listaMarcianos[i][j].posY;
+                        e.imagen1 = imagenes[23];
+                        e.imagen2 = imagenes[22];
+                        listaExplosiones.add(e);
+
                         listaMarcianos[i][j].posY = 2000;
                         listaDisparos.remove(k);
                     }
@@ -199,6 +212,48 @@ public class VentanaJuego extends javax.swing.JFrame {
             }
         }
     }
+        
+        
+
+    private void pintaExplosiones(Graphics2D g2) {//Metodo que pinta todos las explosiones
+
+        Explosion explosionAux;
+        for (int i = 0; i < listaExplosiones.size(); i++) {
+            explosionAux = listaExplosiones.get(i);
+            explosionAux.tiempoDeVida--;
+            if (explosionAux.tiempoDeVida > 25) {
+                g2.drawImage(explosionAux.imagen1, explosionAux.posX, explosionAux.posY, null);
+            }
+            else{
+               g2.drawImage(explosionAux.imagen2, explosionAux.posX, explosionAux.posY, null); 
+            }
+            //Si el tiempo de vida de la explosión es menos o igual que cero, la elimino
+            if (explosionAux.tiempoDeVida >= 0){
+                listaExplosiones.remove(i);
+            }
+        }
+
+    }
+
+    
+        
+        
+
+    
+
+    
+        
+        
+
+    
+
+    
+
+    
+
+
+
+    
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -211,16 +266,24 @@ public class VentanaJuego extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(VentanaJuego.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VentanaJuego.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(VentanaJuego.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VentanaJuego.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(VentanaJuego.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VentanaJuego.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(VentanaJuego.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VentanaJuego.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
